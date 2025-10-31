@@ -1,4 +1,4 @@
-# train_model.py
+#imports
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -47,35 +47,35 @@ def train(df):
         remainder='drop'
     )
 
-    # Create pipeline: preprocessing -> classifier
+    #create pipeline
     clf = Pipeline(steps=[
         ("preprocessor", preprocessor),
         ("classifier", DecisionTreeClassifier(random_state=RANDOM_STATE))
     ])
 
-    if len(X) < 10:  # Tiny dataset mode
+    if len(X) < 10: 
         clf.fit(X, y_enc)
         print("Model trained on all data (tiny dataset mode).")
     else:
-        # Train/Test split
+        #train/test split
         X_train, X_test, y_train, y_test = train_test_split(X, y_enc, test_size=0.2, random_state=RANDOM_STATE)
 
-        # Fit
+        #fit
         clf.fit(X_train, y_train)
 
-        # Predictions on test set
+        #predictions on the test set
         y_pred = clf.predict(X_test)
         test_acc = accuracy_score(y_test, y_pred)
         print(f"\nTest accuracy: {test_acc:.3f}\n")
         print("Classification report (labels are encoded integers):")
         print(classification_report(y_test, y_pred, zero_division=0))
 
-        # Cross-validation for more robust metric
+        #cross-validation for more robust metric
         cv_folds = min(3, len(X))  # safer for small datasets
         cv_scores = cross_val_score(clf, X, y_enc, cv=cv_folds)
         print(f"Cross-val scores: {np.round(cv_scores, 3)}  mean={cv_scores.mean():.3f}")
 
-    # Save the pipeline and the label encoder
+    #save the pipeline and label encoder
     joblib.dump(clf, MODEL_OUT)
     joblib.dump(label_encoder, LABEL_ENCODER_OUT)
     print(f"\nSaved pipeline -> {MODEL_OUT}")
@@ -84,7 +84,7 @@ def train(df):
     return clf, label_encoder
 
 def predict_single(clf, label_encoder, goal, level):
-    # normalize inputs the same way as training
+    # normalise inputs the same way as training
     goal = str(goal).strip().lower()
     level = str(level).strip().lower()
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     df = load_and_clean(CSV_PATH)
     clf, label_enc = train(df)
 
-    # Quick interactive test (change the strings to try different inputs)
+    #interactive test (change the strings to try different inputs)
     sample_goal = "lose face fat"
     sample_level = "beginner"
     recommendation = predict_single(clf, label_enc, sample_goal, sample_level)

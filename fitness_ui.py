@@ -1,7 +1,7 @@
+#inputs needed for project
 import joblib
 import pandas as pd
 
-# Load the trained model and label encoder
 clf = joblib.load("fitness_pipeline.pkl")
 label_enc = joblib.load("label_encoder.pkl")
 
@@ -13,10 +13,9 @@ while True:
         break
     level = input("Enter your fitness level (beginner/intermediate/advanced): ").strip().lower()
 
-    # Prepare input
     user_df = pd.DataFrame([[goal, level]], columns=["Goal", "Fitness Level"])
 
-    # Make prediction
+    #predictions
     pred_enc = clf.predict(user_df)[0]
     recommendation = label_enc.inverse_transform([pred_enc])[0]
 

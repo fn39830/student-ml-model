@@ -1,19 +1,21 @@
+#import necesary libraries
 import joblib
 import pandas as pd
 
-# Load the pipeline and label encoder
+#load pipeline and label encoder
 clf = joblib.load("fitness_pipeline.pkl")
 label_enc = joblib.load("label_encoder.pkl")
 
-# Example user input
+#example of user input
 goal = "lose face fat"
 level = "beginner"
 
-# Put into DataFrame
+#puts data into dataframe
 user_df = pd.DataFrame([[goal, level]], columns=["Goal", "Fitness Level"])
 
-# Predict
+#prediction
 pred = clf.predict(user_df)[0]
 recommendation = label_enc.inverse_transform([pred])[0]
 
+#prints recommendation
 print(f"Recommendation: {recommendation}")
